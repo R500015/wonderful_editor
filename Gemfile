@@ -12,15 +12,19 @@ gem "rails", "~> 6.0.3", ">= 6.0.3.7"
 gem "turbolinks", "~> 5"
 gem "webpacker", "~> 4.0"
 
+gem "devise"
+gem "devise_token_auth"
+gem "rack-cors"
+
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+  gem "factory_bot_rails"
+  gem "faker"
   gem "pry-doc"
   gem "pry-rails"
+  gem "rspec-rails", "~> 5.0.0"
   gem "rubocop-rails"
   gem "rubocop-rspec"
-  gem 'rspec-rails', '~> 5.0.0'
-  gem 'factory_bot_rails'
-  gem 'faker'
 end
 
 group :development do
