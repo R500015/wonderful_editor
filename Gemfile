@@ -10,6 +10,7 @@ gem "puma", "~> 4.1"
 gem "rails", "~> 6.0.3", ">= 6.0.3.7"
 gem "turbolinks", "~> 5"
 gem "webpacker", "~> 4.0"
+gem "rails-erd"
 
 gem "devise"
 gem "devise_token_auth"
