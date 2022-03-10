@@ -8,6 +8,7 @@ gem "bootsnap", ">= 1.4.2", require: false
 gem "pg", ">= 0.18", "< 2.0"
 gem "puma", "~> 4.1"
 gem "rails", "~> 6.0.3", ">= 6.0.3.7"
+gem "rails-erd"
 gem "turbolinks", "~> 5"
 gem "webpacker", "~> 4.0"
 
