@@ -20,19 +20,5 @@
 require "rails_helper"
 
 RSpec.describe Article, type: :model do
-  context "記事のタイトルが指定されているとき" do
-    it "記事が作られる" do
-      user = FactoryBot.create(:user)
-      article = build(:article)
-      expect(article).to be_valid
-    end
-  end
-
-  context "title を指定していないとき" do
-    it "記事作成に失敗する" do
-      article = build(:article, title: nil)
-      expect(article).to be_invalid
-      expect(article.errors.details[:title][0][:error]).to eq :blank
-    end
-  end
+  pending "add some examples to (or delete) #{__FILE__}"
 end

@@ -22,20 +22,5 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  context "コメントの本文が指定されているとき" do
-    it "コメントが作られる" do
-      user = create(:user)
-      article = create(:article)
-      comment = build(:comment)
-      expect(comment).to be_valid
-    end
-  end
-
-  context "body を指定していないとき" do
-    it "コメント作成に失敗する" do
-      comment = build(:comment, body: nil)
-      expect(comment).to be_invalid
-      expect(comment.errors.details[:body][0][:error]).to eq :blank
-    end
-  end
+  pending "add some examples to (or delete) #{__FILE__}"
 end
