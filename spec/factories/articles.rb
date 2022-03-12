@@ -19,7 +19,7 @@
 #
 FactoryBot.define do
   factory :article do
-    title { "MyString" }
-    body { "MyText" }
+    title { Faker::Hacker.abbreviation }
+    body { Faker::Hacker.say_something_smart }
   end
 end
