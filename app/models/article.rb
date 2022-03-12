@@ -18,7 +18,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Article < ApplicationRecord
-  belongs_to :user
+  validates :title, presence: true
+  belongs_to :user, optional: true
   has_many :comments, dependent: :destroy
   has_many :article_likes, dependent: :destroy
 end
