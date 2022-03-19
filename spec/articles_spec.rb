@@ -23,11 +23,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
       let(:article_id) { article.id }
       let(:article) { create(:article) }
 
+      # rubocop:disable RSpec/MultipleExpectations
       it "その記事のレコードが取得できる" do
+        # rubocop:enable RSpec/MultipleExpectations
         subject
 
         res = JSON.parse(response.body)
         expect(res["id"]).to eq article.id
+        expect(res["title"]).to eq article.title
+        expect(res["body"]).to eq article.body
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -37,6 +42,25 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "その記事が見つからない" do
         expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
       end
+    end
+  end
+
+  describe "POST /api/v1/articles" do
+    subject { post(api_v1_articles_path, params: params) }
+
+    let(:params) { { article: attributes_for(:article) } }
+    let(:current_user) { create(:user) }
+
+    before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+
+    # rubocop:disable RSpec/MultipleExpectations
+    it "ユーザーのレコードが作成できる" do
+      # rubocop:enable RSpec/MultipleExpectations
+      expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
+      res = JSON.parse(response.body)
+      expect(res["title"]).to eq params[:article][:title]
+      expect(res["body"]).to eq params[:article][:body]
+      expect(response).to have_http_status(:ok)
     end
   end
 end
