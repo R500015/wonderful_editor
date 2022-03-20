@@ -7,12 +7,18 @@ module Api::V1
 
     def show
       article = Article.find(params[:id])
-      render json: article, each_serializer: Api::V1::ArticleSerializer
+      render json: article, serializer: Api::V1::ArticleSerializer
     end
 
     def create
       article = current_user.articles.create!(article_params)
-      render json: article, each_serializer: Api::V1::ArticleSerializer
+      render json: article, serializer: Api::V1::ArticleSerializer
+    end
+
+    def update
+      article = current_user.articles.find(params[:id])
+      article.update!(article_params)
+      render json: article, serializer: Api::V1::ArticleSerializer
     end
 
     private
