@@ -11,7 +11,6 @@ RSpec.describe "Api::V1::Articles", type: :request do
     it "記事の一覧が取得できる" do
       subject
       res = JSON.parse(response.body)
-
       expect(res.map {|d| d["id"] }).to eq [article3.id, article1.id, article2.id]
     end
   end
@@ -27,7 +26,6 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "その記事のレコードが取得できる" do
         # rubocop:enable RSpec/MultipleExpectations
         subject
-
         res = JSON.parse(response.body)
         expect(res["id"]).to eq article.id
         expect(res["title"]).to eq article.title
@@ -61,6 +59,35 @@ RSpec.describe "Api::V1::Articles", type: :request do
       expect(res["title"]).to eq params[:article][:title]
       expect(res["body"]).to eq params[:article][:body]
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "PATCH /api/v1/articles/:id" do
+    subject { patch(api_v1_article_path(article.id), params: params) }
+
+    let(:params) { { article: attributes_for(:article) } }
+    let(:current_user) { create(:user) }
+    before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+
+    context "自分が所持している記事のレコードを更新しようとするとき" do
+      let(:article) { create(:article, user: current_user) }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it "記事を更新できる" do
+        # rubocop:enable RSpec/MultipleExpectations
+        expect { subject }.to change { article.reload.title }.from(article.title).to(params[:article][:title]) &
+                              change { article.reload.body }.from(article.body).to(params[:article][:body])
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "自分が所持していない記事のレコードを更新しようとするとき" do
+      let(:other_user) { create(:user) }
+      let!(:article) { create(:article, user: other_user) }
+
+      it "更新できない" do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end
