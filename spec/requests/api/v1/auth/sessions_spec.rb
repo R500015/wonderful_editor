@@ -2,18 +2,59 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Auth::Sessions", type: :request do
   describe "POST /api/v1/auth/sign_in" do
-    subject { post(api_v1_user_session_path, params: params, headers: token) }
+    subject { post(api_v1_user_session_path, params: params) }
 
-    context "ログインが上手くいく場合" do
-      before { create(:user, name: "bbb", email: "bbb@example.com", password: "bbbbbbbb", password_confirmation: "bbbbbbbb") }
-      # let!(:user) { { name: "bbb", email: "bbb@example.com", password: "bbbbbbbb" } }
-      let(:params) { attributes_for(:user) }
-      # binding.pry
-      let(:token) { sign_in user }
+    context "メールアドレス、パスワードが正しいとき" do
+      let(:current_user) { create(:user) }
+      let(:params) { { email: current_user.email, password: current_user.password } }
 
-      fit "正しい情報を入力すればユーザーはログインができる" do
+      # rubocop:disable RSpec/MultipleExpectations
+      it "ログインできる" do
+        # rubocop:enable RSpec/MultipleExpectations
+
         subject
+        expect(response.headers["uid"]).to be_present
+        expect(response.headers["access-token"]).to be_present
+        expect(response.headers["client"]).to be_present
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "email が正しくないとき" do
+      let(:current_user) { create(:user) }
+      let(:params) { { email: "test@example.com", password: current_user.password } }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it "ログインができない" do
+        # rubocop:enable RSpec/MultipleExpectations
+
+        subject
+        res = JSON.parse(response.body)
+        expect(res["success"]).to be_falsey
+        expect(res["errors"]).to include("Invalid login credentials. Please try again.")
+        expect(response.headers["uid"]).to be_blank
+        expect(response.headers["access-token"]).to be_blank
+        expect(response.headers["client"]).to be_blank
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "password が正しくないとき" do
+      let(:current_user) { create(:user) }
+      let(:params) { { email: current_user.email, password: "12345678" } }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it "ログインができない" do
+        # rubocop:enable RSpec/MultipleExpectations
+
+        subject
+        res = JSON.parse(response.body)
+        expect(res["success"]).to be_falsey
+        expect(res["errors"]).to include("Invalid login credentials. Please try again.")
+        expect(response.headers["uid"]).to be_blank
+        expect(response.headers["access-token"]).to be_blank
+        expect(response.headers["client"]).to be_blank
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
