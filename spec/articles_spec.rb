@@ -92,9 +92,10 @@ RSpec.describe "Api::V1::Articles", type: :request do
   end
 
   describe "DELETE /api/v1/articles/:id" do
-    subject { delete(api_v1_article_path(article.id)) }
+    subject { delete(api_v1_article_path(article_id)) }
 
-    let!(:current_user) { create(:user) }
+    let(:current_user) { create(:user) }
+    let(:article_id) { article.id }
     before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
 
     context "自分の記事を削除しようとするとき" do
@@ -104,7 +105,6 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "記事を削除できる" do
         # rubocop:enable RSpec/MultipleExpectations
         expect { subject }.to change { Article.count }.by(-1)
-        # expect(response).to have_http_status(:no_content)
         expect(response).to have_http_status(:ok)
       end
     end
