@@ -58,4 +58,37 @@ RSpec.describe "Api::V1::Auth::Sessions", type: :request do
       end
     end
   end
+
+  describe "DELETE /api/v1/auth/sign_out" do
+    subject { delete(destroy_api_v1_user_session_path, headers: headers) }
+
+    context "ログアウトに必要な情報を送信したとき" do
+      let(:current_user) { create(:user) }
+      let(:headers) { current_user.create_new_auth_token }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it "ログアウトできる" do
+        # rubocop:enable RSpec/MultipleExpectations
+        subject
+        res = JSON.parse(response.body)
+        expect(res["success"]).to be_truthy
+        expect(current_user.reload.tokens).to be_blank
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "誤った情報を送信したとき" do
+      let(:user) { create(:user) }
+      let!(:headers) { { "access-token" => "", "token-type" => "", "client" => "", "expiry" => "", "uid" => "" } }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it "ログアウトできない" do
+        # rubocop:enable RSpec/MultipleExpectations
+        subject
+        expect(response).to have_http_status(:not_found)
+        res = JSON.parse(response.body)
+        expect(res["errors"]).to include "User was not found or was not logged in."
+      end
+    end
+  end
 end
