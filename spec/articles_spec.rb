@@ -45,15 +45,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
   describe "POST /api/v1/articles" do
     # subject { post(api_v1_articles_path, params: params, headers: headers) }
-    subject { post(api_v1_articles_path, params: params) }
+    subject { post(api_v1_articles_path, params: params, params, headers: headers) }
 
     let(:params) { { article: attributes_for(:article) } }
     let(:current_user) { create(:user) }
-    before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+    # before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
 
     # rubocop:disable RSpec/MultipleExpectations
-    it "ユーザーのレコードが作成できる" do
+    fit "ユーザーのレコードが作成できる" do
       # rubocop:enable RSpec/MultipleExpectations
+      binding.pry
       expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
       res = JSON.parse(response.body)
       expect(res["title"]).to eq params[:article][:title]

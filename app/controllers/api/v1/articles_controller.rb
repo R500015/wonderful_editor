@@ -1,5 +1,7 @@
 module Api::V1
   class ArticlesController < BaseApiController
+    before_action :authenticate_api_v1_user!
+
     def index
       articles = Article.order(updated_at: :desc)
       render json: articles, each_serializer: Api::V1::ArticlePreviewSerializer
@@ -11,7 +13,9 @@ module Api::V1
     end
 
     def create
-      article = current_user.articles.create!(article_params)
+      binding.pry
+      article = current_api_v1_user.articles.create!(article_params)
+      binding.pry
       render json: article, serializer: Api::V1::ArticleSerializer
     end
 
