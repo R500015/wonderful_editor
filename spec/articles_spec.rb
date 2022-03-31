@@ -44,30 +44,32 @@ RSpec.describe "Api::V1::Articles", type: :request do
   end
 
   describe "POST /api/v1/articles" do
-    # subject { post(api_v1_articles_path, params: params, headers: headers) }
-    subject { post(api_v1_articles_path, params: params) }
+    subject { post(api_v1_articles_path, params: params, headers: headers) }
 
-    let(:params) { { article: attributes_for(:article) } }
-    let(:current_user) { create(:user) }
-    before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+    context "ログインユーザーが記事を作成するとき" do
+      let(:params) { { article: attributes_for(:article) } }
+      let(:current_user) { create(:user) }
+      let(:headers) { current_user.create_new_auth_token }
 
-    # rubocop:disable RSpec/MultipleExpectations
-    it "ユーザーのレコードが作成できる" do
-      # rubocop:enable RSpec/MultipleExpectations
-      expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
-      res = JSON.parse(response.body)
-      expect(res["title"]).to eq params[:article][:title]
-      expect(res["body"]).to eq params[:article][:body]
-      expect(response).to have_http_status(:ok)
+      # rubocop:disable RSpec/MultipleExpectations
+      it "ユーザーのレコードが作成できる" do
+        # rubocop:enable RSpec/MultipleExpectations
+
+        expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
+        res = JSON.parse(response.body)
+        expect(res["title"]).to eq params[:article][:title]
+        expect(res["body"]).to eq params[:article][:body]
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
   describe "PATCH /api/v1/articles/:id" do
-    subject { patch(api_v1_article_path(article.id), params: params) }
+    subject { patch(api_v1_article_path(article.id), params: params, headers: headers) }
 
     let(:params) { { article: attributes_for(:article) } }
     let(:current_user) { create(:user) }
-    before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+    let(:headers) { current_user.create_new_auth_token }
 
     context "自分が所持している記事のレコードを更新しようとするとき" do
       let(:article) { create(:article, user: current_user) }
@@ -75,6 +77,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       # rubocop:disable RSpec/MultipleExpectations
       it "記事を更新できる" do
         # rubocop:enable RSpec/MultipleExpectations
+
         expect { subject }.to change { article.reload.title }.from(article.title).to(params[:article][:title]) &
                               change { article.reload.body }.from(article.body).to(params[:article][:body])
         expect(response).to have_http_status(:ok)
@@ -92,11 +95,11 @@ RSpec.describe "Api::V1::Articles", type: :request do
   end
 
   describe "DELETE /api/v1/articles/:id" do
-    subject { delete(api_v1_article_path(article_id)) }
+    subject { delete(api_v1_article_path(article_id), headers: headers) }
 
     let(:current_user) { create(:user) }
     let(:article_id) { article.id }
-    before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+    let(:headers) { current_user.create_new_auth_token }
 
     context "自分の記事を削除しようとするとき" do
       let!(:article) { create(:article, user: current_user) }
@@ -104,6 +107,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       # rubocop:disable RSpec/MultipleExpectations
       it "記事を削除できる" do
         # rubocop:enable RSpec/MultipleExpectations
+
         expect { subject }.to change { Article.count }.by(-1)
         expect(response).to have_http_status(:ok)
       end
