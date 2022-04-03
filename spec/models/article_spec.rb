@@ -4,7 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  body       :text
-#  status     :integer          default(0), not null
+#  status     :integer          default("draft"), not null
 #  title      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -38,73 +38,63 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  # enum state: { draft: 0, published: 1, deleted: 2 }
-  # article = Article.new(status: :draft)
-  # Article.statuses # => { draft: 0, published: 1 }
-  # article = Article.new(status: Article.statuses[:draft]) のように使える
 
   # やりたいこと
   # statusに draft が定義されているとき(status: :draft)、 下書き記事として保存することができる。
-  # enum state: { draft: 0, published: 1 }
-  # user = FactoryBot.create(:user)
-  # let(:user) { create(:user) }
-  context "下書き(draft)を指定しているとき" do
-    # let!(:article) { build(:article) }
-    # binding.pry
-    # let(:article) { create(:article, title: "foo", status: :draft) }
 
-    fit "下書き記事として保存することができる" do
-      # article = build(:article, status: :draft)
-      # article = Article.create!(title: "foo", status: :draft)
-      article = Article.new(title: "foo", status: 0)
-      binding.pry
-      # expect(article.draft?).to eq true
-      expect(0).to eq 0
+  # context "下書き(draft)を指定しているとき" do
+  #   let(:article) { create(:article, title: "foo", status: :draft) }
 
-      # expect(article.status).to eq true
-      # expect(user.valid?).to eq true
-      # user = build(:user, account: "foo")
-      # article = Article.new(status: :draft)
-      # expect(article).to be_valid
+  #   it "下書き記事として保存することができる" do
+  #     expect(article.draft?).to eq true
+  #     expect(article.status).to eq "draft"
+  #   end
+  # end
+
+  context "status: draft を指定したとき" do
+    article = Article.new
+    article.title = "foo"
+    article.status = :draft
+
+    it "下書き記事の保存に成功する" do
+      expect(article.draft?).to eq true
+      expect(article.status).to eq "draft"
+      expect(article.save).to be_truthy
     end
   end
 
-
   # やりたいこと
   # statusに draft が定義されていないとき(status: :published)、 下書き記事としての保存に失敗する。
-  # enum state: { draft: 0, published: 1 }
   # context "下書き(draft)を指定していないとき" do
-  #   let(:user) { create(:user) }
-  #   let(:article) { build(:article) }
+  #   article = Article.new
+  #   article.status = :published
 
   #   it "下書き記事としての保存に失敗する" do
-  #     expect(article).to be_valid
+  #     expect(article.draft?).to eq false
+  #     expect(article.status).to eq "published"
+  #     expect(article.save).to be_falsey
   #   end
   # end
 
+  context "status: published を指定したとき" do
+    article = Article.new
+    article.title = "hoge"
+    article.status = :published
 
-  # やりたいこと
-  # statusに published が定義されているとき(status: :published)、 公開記事として保存することができる。
-  # enum state: { draft: 0, published: 1 }
-  # context "公開(published)を指定しているとき" do
-  #   let(:user) { create(:user) }
-  #   let(:article) { build(:article) }
+    it "公開記事の保存に成功する" do
+      expect(article.published?).to eq true
+      expect(article.status).to eq "published"
+      expect(article.save).to be_truthy
+    end
+  end
 
-  #   it "公開記事として保存することができる" do
-  #     expect(article).to be_valid
-  #   end
-  # end
-
-
-  # やりたいこと
-  # statusに published が定義されていないとき(status: :published)、 公開記事としての保存に失敗する。
-  # enum state: { draft: 0, published: 1 }
-  # context "公開(published)を指定していないとき" do
-  #   let(:user) { create(:user) }
-  #   let(:article) { build(:article) }
-
-  #   it "公開記事としての保存に失敗する" do
-  #     expect(article).to be_valid
-  #   end
-  # end
+  context "status を指定しないとき" do
+    fit "記事の保存に失敗する" do
+      article = Article.new
+      article.title = "hoge"
+      binding.pry
+      # expect(article).to be_valid
+      # binding.pry
+    end
+  end
 end
