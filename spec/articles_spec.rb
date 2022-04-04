@@ -8,10 +8,15 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let!(:article2) { create(:article, updated_at: 2.days.ago) }
     let!(:article3) { create(:article) }
 
+    # rubocop:disable RSpec/MultipleExpectations
     it "記事の一覧が取得できる" do
+      # rubocop:enable RSpec/MultipleExpectations
+
       subject
       res = JSON.parse(response.body)
       expect(res.map {|d| d["id"] }).to eq [article3.id, article1.id, article2.id]
+      expect(res[0].keys).to eq ["id", "title", "updated_at", "user"]
+      expect(res[0]["user"].keys).to eq ["id", "name", "email"]
     end
   end
 
