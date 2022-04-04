@@ -4,7 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  body       :text
-#  status     :integer          default("draft"), not null
+#  status     :string           default("draft")
 #  title      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -38,63 +38,55 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "正常系" do
+    context "タイトルと本文が入力されているとき" do
+      let(:article) { build(:article) }
 
-  # やりたいこと
-  # statusに draft が定義されているとき(status: :draft)、 下書き記事として保存することができる。
+      # rubocop:disable RSpec/MultipleExpectations
+      it "下書き状態の記事が作成できる" do
+        # rubocop:enable RSpec/MultipleExpectations
 
-  # context "下書き(draft)を指定しているとき" do
-  #   let(:article) { create(:article, title: "foo", status: :draft) }
+        expect(article).to be_valid
+        expect(article.status).to eq "draft"
+      end
+    end
 
-  #   it "下書き記事として保存することができる" do
-  #     expect(article.draft?).to eq true
-  #     expect(article.status).to eq "draft"
-  #   end
-  # end
+    context "status が下書き状態のとき" do
+      let(:article) { build(:article, :draft) }
 
-  context "status: draft を指定したとき" do
-    article = Article.new
-    article.title = "foo"
-    article.status = :draft
+      # rubocop:disable RSpec/MultipleExpectations
+      it "記事を下書き状態で作成できる" do
+        # rubocop:enable RSpec/MultipleExpectations
 
-    it "下書き記事の保存に成功する" do
-      expect(article.draft?).to eq true
-      expect(article.status).to eq "draft"
-      expect(article.save).to be_truthy
+        expect(article).to be_valid
+        expect(article.status).to eq "draft"
+      end
+    end
+
+    context "status が公開状態のとき" do
+      let(:article) { build(:article, :published) }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it "記事を公開状態で作成できる" do
+        # rubocop:enable RSpec/MultipleExpectations
+
+        expect(article).to be_valid
+        expect(article.status).to eq "published"
+      end
     end
   end
 
-  # やりたいこと
-  # statusに draft が定義されていないとき(status: :published)、 下書き記事としての保存に失敗する。
-  # context "下書き(draft)を指定していないとき" do
-  #   article = Article.new
-  #   article.status = :published
+  describe "異常系" do
+    context "status を指定しないとき" do
+      let(:article) { build(:article, status: nil) }
 
-  #   it "下書き記事としての保存に失敗する" do
-  #     expect(article.draft?).to eq false
-  #     expect(article.status).to eq "published"
-  #     expect(article.save).to be_falsey
-  #   end
-  # end
+      # rubocop:disable RSpec/MultipleExpectations
+      it "記事の保存に失敗する" do
+        # rubocop:enable RSpec/MultipleExpectations
 
-  context "status: published を指定したとき" do
-    article = Article.new
-    article.title = "hoge"
-    article.status = :published
-
-    it "公開記事の保存に成功する" do
-      expect(article.published?).to eq true
-      expect(article.status).to eq "published"
-      expect(article.save).to be_truthy
-    end
-  end
-
-  context "status を指定しないとき" do
-    fit "記事の保存に失敗する" do
-      article = Article.new
-      article.title = "hoge"
-      binding.pry
-      # expect(article).to be_valid
-      # binding.pry
+        expect(article).to be_valid
+        expect(article.status).to eq nil
+      end
     end
   end
 end
