@@ -65,9 +65,35 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(res["title"]).to eq params[:article][:title]
         expect(res["body"]).to eq params[:article][:body]
         expect(response).to have_http_status(:ok)
+        # binding.pry
+      end
+    end
+
+    # binding.pry
+    context "ログインユーザーが 公開 を指定して 記事を作成 するとき" do
+      let(:params) { { article: attributes_for(:article, :published) } }
+      let(:current_user) { create(:user) }
+      let(:headers) { current_user.create_new_auth_token }
+      # let(:published_article) { create(:article, :published) }
+
+      fit "公開記事 が作成できる" do
+        # binding.pry
+        subject
+        expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
+        res = JSON.parse(response.body)
+        expect(res["title"]).to eq params[:article][:title]
+        expect(res["body"]).to eq params[:article][:body]
+        expect(response).to have_http_status(:ok)
+        # binding.pry
       end
     end
   end
+
+  #   context "ログインユーザーが 非公開 を指定して 記事を作成 するとき" do
+  # let(:params) { { article: attributes_for(:article, :draft) } }
+  #     it "下書き記事 が作成できる" do
+  #     end
+  # end
 
   describe "PATCH /api/v1/articles/:id" do
     subject { patch(api_v1_article_path(article.id), params: params, headers: headers) }
