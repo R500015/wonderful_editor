@@ -17,8 +17,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       subject
       res = JSON.parse(response.body)
       expect(res.map {|d| d["id"] }).to eq [article3.id, article1.id, article2.id]
-      expect(res[0].keys).to eq ["id", "title", "updated_at", "user"]
-      expect(res[0]["user"].keys).to eq ["id", "name", "email"]
+      expect(res[0].keys).to eq ["id", "title", "updated_at"]
     end
   end
 
@@ -37,10 +36,6 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
           subject
           res = JSON.parse(response.body)
-          # expect(response).to have_http_status(:ok)
-          # expect(res["id"]).to eq article.id
-          # expect(res["title"]).to eq article.title
-          # expect(res["body"]).to eq article.body
           expect(res["updated_at"]).to be_present
           expect(res["user"]["id"]).to eq article.user.id
           expect(res["user"].keys).to eq ["id", "name", "email"]
