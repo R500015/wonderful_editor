@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Drafts", type: :request do
   let(:current_user) { create(:user) }
@@ -9,7 +9,7 @@ RSpec.describe "Drafts", type: :request do
 
     context "下書きページにアクセスするとき" do
       let!(:article) { create(:article, :draft, user: current_user) }
-      let!(:other_article) { create(:article, :draft)}
+      let!(:other_article) { create(:article, :draft) }
 
       # rubocop:disable RSpec/MultipleExpectations
       it "自分（ログインしているユーザー）の書いた 下書き記事 が取得できる" do
@@ -33,7 +33,7 @@ RSpec.describe "Drafts", type: :request do
         let(:article) { create(:article, :draft, user: current_user) }
 
         # rubocop:disable RSpec/MultipleExpectations
-        it "自分（ログインしているユーザー）が書いた 任意の下書き記事 が取得できる"  do
+        it "自分（ログインしているユーザー）が書いた 任意の下書き記事 が取得できる" do
           # rubocop:enable RSpec/MultipleExpectations
 
           subject
