@@ -17,7 +17,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       subject
       res = JSON.parse(response.body)
       expect(res.map {|d| d["id"] }).to eq [article3.id, article1.id, article2.id]
-      expect(res[0].keys).to eq ["id", "title", "updated_at"]
+      expect(res[0].keys).to eq ["id", "title", "updated_at", "user"]
     end
   end
 
