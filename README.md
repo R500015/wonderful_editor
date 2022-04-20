@@ -34,11 +34,16 @@ password : gest1234
 ## 機能一覧
 - 記事一覧機能(トップページ)
 - マイページ（自分が書いた記事の一覧）
+
 ![ホーム画面](https://media.giphy.com/media/wVICyqnBUfFLuu9qx5/giphy.gif)
+
 - ユーザー登録・サインイン/サインアウト
+
 ![ログイン](https://media.giphy.com/media/Z8gKPAAm3d31rgEEYE/giphy.gif)
+
 - 記事CRUD (一覧以外)
 - 記事の下書き機能
+
 ![投稿](https://media.giphy.com/media/2FOhMW6CD0XMBBXYVO/giphy.gif)
 
 ## テスト
@@ -47,4 +52,4 @@ password : gest1234
   - 結合テスト（Request）
 
 ## ER図
-[erd.pdf](https://github.com/ryota-okonogi/wonderful_editor/files/8521275/erd.pdf)
+![image](https://user-images.githubusercontent.com/91635588/164226150-09cbdba6-8e3a-4b43-b094-c1c69cab6fc0.png)
