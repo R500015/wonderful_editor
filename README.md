@@ -17,7 +17,7 @@
 - password : gest1234
 
 ## 制作意図
-「実務を見据えたスキルを学習」を意識して制作しました。
+「実務を見据えたスキルの学習」を意識して制作しました。
 
  転職前に、「試行錯誤する力」「わからないことを調べる力」「適切な質問ができる力」
  という自走力を磨くために注力してきました。
@@ -48,7 +48,8 @@
  <img src="https://media.giphy.com/media/wVICyqnBUfFLuu9qx5/giphy.gif" width="850px" />
 </p>
 
-- ユーザー登録・サインイン/サインアウト
+- ユーザー登録
+- サインイン/サインアウト
 <p align="center">
  <img src="https://media.giphy.com/media/Z8gKPAAm3d31rgEEYE/giphy.gif" width="850px" />
 </p>
