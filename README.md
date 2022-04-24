@@ -12,9 +12,9 @@
 
 ## URL・テストアカウント
 - ポートフォリオURL　: [Wonderful Editor_URL](https://wonderful-editor-master.herokuapp.com/)
-- アカウント : gest
-- email : gest@example.com
-- password : gest1234
+- アカウント : guest
+- email : guest@sample.com
+- password : 12345678
 
 ## 制作意図
 「実務を見据えたスキルの学習」を意識して制作しました。
